@@ -48,6 +48,16 @@
         <input type="submit" value="Generate Plot">
     </form>
 
+    <h3>Historical Data</h3>
+    <form>
+        <ul>
+            <li><label><input type="radio" name="historical" value="prev_week"> Previous Week</label></li>
+            <li><label><input type="radio" name="historical" value="prev_month"> Previous Month</label></li>
+            <li><label><input type="radio" name="historical" value="prev_year"> Previous Year</label></li>
+            <li><label><input type="radio" name="historical" value="all"> All Time</label></li>
+        </ul>
+    </form>
+
     <script>
         function toggleSubItems(checkbox) {
             var sector = checkbox.value;
