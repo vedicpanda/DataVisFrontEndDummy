@@ -9,27 +9,62 @@ app = Flask(__name__)
 def load_or_generate_dummy_data():
     if not os.path.exists('dummy_stock_data.csv'):
         generate_dummy_data()
-    return pd.read_csv('dummy_stock_data.csv')
+    df = pd.read_csv('dummy_stock_data.csv')
+    df['Date'] = pd.to_datetime(df['Date'])  # Convert 'Date' column to Timestamp objects
+    return df
 
 def generate_dummy_data():
+    date_range = pd.date_range(start='2024-01-01', end='2024-12-31')
+    num_days = len(date_range)
+    
     data = {
-        'Date': pd.date_range(start='2022-01-01', end='2022-12-31'),
-        'AAPL': [100 + i for i in range(365)],
-        'GOOGL': [200 + i for i in range(365)],
-        'MSFT': [150 + i for i in range(365)]
+        'Date': date_range,
+        'AAPL': [100 + i for i in range(num_days)],
+        'GOOGL': [200 + i for i in range(num_days)],
+        'MSFT': [150 + i for i in range(num_days)],
+        'AMZN': [250 + i for i in range(num_days)],  # Tech sector
+        'JNJ': [120 + i for i in range(num_days)],   # Healthcare sector
+        'KO': [50 + i for i in range(num_days)],    # Beverage sector
+        'XOM': [60 + i for i in range(num_days)],   # Energy sector
+        'IBM': [170 + i for i in range(num_days)],  # Tech sector
+        'PFE': [110 + i for i in range(num_days)],  # Healthcare sector
+        'PEP': [55 + i for i in range(num_days)],   # Beverage sector
+        'CVX': [65 + i for i in range(num_days)]    # Energy sector
     }
     df = pd.DataFrame(data)
     df.to_csv('dummy_stock_data.csv', index=False)
 
-df = load_or_generate_dummy_data()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    df = load_or_generate_dummy_data()
+    available_stocks = df.columns[1:].tolist()  # Exclude the 'Date' column
+    return render_template('index.html', available_stocks=available_stocks)
 
 @app.route('/plot', methods=['POST'])
 def plot():
+    df = load_or_generate_dummy_data()
     selected_stocks = request.form.getlist('stocks')
+
+    # Extracting selected historical data option
+    historical_data = request.form.get('historical')
+
+    print("Selected Historical Data Option:", historical_data)
+
+    # Filtering data based on selected historical data option
+    if historical_data == 'prev_week':
+        print("Filtering data for previous week...")
+        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=7)]
+    elif historical_data == 'prev_month':
+        print("Filtering data for previous month...")
+        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=30)]
+    elif historical_data == 'prev_year':
+        print("Filtering data for previous year...")
+        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=365)]
+    # For "All Time", no need to filter the data
+
+    print("Filtered DataFrame:")
+    print(df.head())
 
     traces = []
     for stock in selected_stocks:
@@ -41,6 +76,7 @@ def plot():
     plot_div = fig.to_html(full_html=False)
 
     return render_template('plot.html', plot_div=plot_div)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

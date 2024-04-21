@@ -38,24 +38,19 @@
     <h3>Stock Selection</h3>
     <form action="/plot" method="post">
         <ul>
-            <li><label><input type="checkbox" name="sector" value="Technology" onchange="toggleSubItems(this)"> Technology</label></li>
-            <ul>
-                <li><label for="AAPL"><input type="checkbox" name="stocks" value="AAPL" class="Technology" id="AAPL">AAPL</label></li>
-                <li><label for="GOOGL"><input type="checkbox" name="stocks" value="GOOGL" class="Technology" id="GOOGL">GOOGL</label></li>
-                <li><label for="MSFT"><input type="checkbox" name="stocks" value="MSFT" class="Technology" id="MSFT">MSFT</label></li>
-            </ul>
+            {% for stock in available_stocks %}
+            <li><label><input type="checkbox" name="stocks" value="{{ stock }}">{{ stock }}</label></li>
+            {% endfor %}
         </ul>
-        <input type="submit" value="Generate Plot">
-    </form>
 
-    <h3>Historical Data</h3>
-    <form>
+        <h3>Historical Data</h3>
         <ul>
             <li><label><input type="radio" name="historical" value="prev_week"> Previous Week</label></li>
             <li><label><input type="radio" name="historical" value="prev_month"> Previous Month</label></li>
             <li><label><input type="radio" name="historical" value="prev_year"> Previous Year</label></li>
             <li><label><input type="radio" name="historical" value="all"> All Time</label></li>
         </ul>
+        <input type="submit" value="Generate Plot">
     </form>
 
     <script>
