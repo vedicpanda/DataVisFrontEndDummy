@@ -4,14 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Visualization</title>
+
+    <style>
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+    
+        ul li {
+            margin-bottom: 5px;
+        }
+    
+        ul ul {
+            margin-left: 20px;
+        }
+
+        h1 {
+            color: #000080;
+        }
+
+        h3 {
+            color: #000080;
+        }
+
+        body {
+            background-color: #d3d3d3;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Select Stocks to Visualize</h1>
+    <h1>Stock Price Prediction Tool</h1>
+    <h3>Stock Selection</h3>
     <form action="/plot" method="post">
-        <label for="AAPL"><input type="checkbox" name="stocks" value="AAPL" id="AAPL">AAPL</label><br>
-        <label for="GOOGL"><input type="checkbox" name="stocks" value="GOOGL" id="GOOGL">GOOGL</label><br>
-        <label for="MSFT"><input type="checkbox" name="stocks" value="MSFT" id="MSFT">MSFT</label><br>
+        <ul>
+            <li><label><input type="checkbox" name="sector" value="Technology" onchange="toggleSubItems(this)"> Technology</label></li>
+            <ul>
+                <li><label for="AAPL"><input type="checkbox" name="stocks" value="AAPL" class="Technology" id="AAPL">AAPL</label></li>
+                <li><label for="GOOGL"><input type="checkbox" name="stocks" value="GOOGL" class="Technology" id="GOOGL">GOOGL</label></li>
+                <li><label for="MSFT"><input type="checkbox" name="stocks" value="MSFT" class="Technology" id="MSFT">MSFT</label></li>
+            </ul>
+        </ul>
         <input type="submit" value="Generate Plot">
     </form>
+
+    <script>
+        function toggleSubItems(checkbox) {
+            var sector = checkbox.value;
+            var subItems = document.getElementsByClassName(sector);
+            for (var i = 0; i < subItems.length; i++) {
+                subItems[i].checked = checkbox.checked;
+            }
+        }
+    </script>
+
 </body>
 </html>
