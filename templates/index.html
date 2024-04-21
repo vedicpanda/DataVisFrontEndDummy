@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Visualization</title>
+</head>
+<body>
+    <h1>Select Stocks to Visualize</h1>
+    <form action="/plot" method="post">
+        <label for="AAPL"><input type="checkbox" name="stocks" value="AAPL" id="AAPL">AAPL</label><br>
+        <label for="GOOGL"><input type="checkbox" name="stocks" value="GOOGL" id="GOOGL">GOOGL</label><br>
+        <label for="MSFT"><input type="checkbox" name="stocks" value="MSFT" id="MSFT">MSFT</label><br>
+        <input type="submit" value="Generate Plot">
+    </form>
+</body>
+</html>
