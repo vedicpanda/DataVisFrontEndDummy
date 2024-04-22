@@ -45,30 +45,34 @@ def index():
 def plot():
     df = load_or_generate_dummy_data()
     selected_stocks = request.form.getlist('stocks')
+    print("Selected Stocks:", selected_stocks)
 
     # Extracting selected historical data option
     historical_data = request.form.get('historical')
-
     print("Selected Historical Data Option:", historical_data)
 
     # Filtering data based on selected historical data option
     if historical_data == 'prev_week':
         print("Filtering data for previous week...")
-        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=7)]
+        df_filtered = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=7)]
+        df_filtered = df_filtered[df['Date'] <= pd.Timestamp.today()]
     elif historical_data == 'prev_month':
         print("Filtering data for previous month...")
-        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=30)]
+        df_filtered = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=30)]
+        df_filtered = df_filtered[df['Date'] <= pd.Timestamp.today()]
     elif historical_data == 'prev_year':
         print("Filtering data for previous year...")
-        df = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=365)]
-    # For "All Time", no need to filter the data
+        df_filtered = df[df['Date'] >= pd.Timestamp.today() - pd.Timedelta(days=365)]
+        df_filtered = df_filtered[df['Date'] <= pd.Timestamp.today()]
+    else: # For "All Time", no need to filter the data
+        df_filtered = df
 
     print("Filtered DataFrame:")
     print(df.head())
 
     traces = []
     for stock in selected_stocks:
-        trace = go.Scatter(x=df['Date'], y=df[stock], mode='lines', name=stock)
+        trace = go.Scatter(x=df_filtered['Date'], y=df_filtered[stock], mode='lines', name=stock)
         traces.append(trace)
 
     layout = go.Layout(title='Stock Prices', xaxis=dict(title='Date'), yaxis=dict(title='Price'))
